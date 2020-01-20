@@ -1,4 +1,4 @@
-PROGRAM=uart1
+PROGRAM=uart2
 F_CPU=16000000
 MCU=atmega328p
 PORT?=/dev/ttyUSB0

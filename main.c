@@ -35,18 +35,24 @@ void uart_tx_buf(char const * str, size_t length)
 int main()
 {
   UCSR0A = 0; // Single Speed, Kein Multiprozessormodus
-  UCSR0B = (1<<RXEN0) | (1<<TXEN0); // Sender und Empfänger anschalten
+  UCSR0B = (1<<RXCIE0) | (1<<RXEN0) | (1<<TXEN0); // Sender und Empfänger anschalten, Empfangsinterrupt anschalten
   UCSR0C =  (1<<UCSZ01) | (1<<UCSZ00); // 8N1
   UBRR0 = (UBRR_BAUD & 0xFFF); 
 
-  // Schreibe einen String auf den Seriellport:
+  // Schreibe einen String auf den Seriellport
+  // ohne Interrupts
   char const text[] = "Hello, World!\r\n";
   uart_tx_buf(text, sizeof(text) - 1);
 
-  while(true)
-  {
-    char c = uart_rx();
-    uart_tx(c);
-  }
+  // Interrupts aktivieren, um auch beim Empfangen/Senden Zeit zu sparen
+  sei();
+
+  while(true);
 }
 
+ISR(USART_RX_vect)
+{
+  // komische Zeile:
+  // Kopiere das Empfangsregister ins Senderegister.
+  UDR0 = UDR0;
+}
