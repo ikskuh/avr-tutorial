@@ -15,3 +15,8 @@ for the [Arduino Nano](https://store.arduino.cc/arduino-nano).
 - avr-gcc
 - avr-libc
 - avrdude
+
+## Licence
+
+*This code is provided for educational purposes and may be adapted to your needs.*
+*You can do whatever you want with it, i don't really care.*
