@@ -1,11 +1,12 @@
-PROGRAM=blinky2
+PROGRAM=uart1
 F_CPU=16000000
 MCU=atmega328p
 PORT?=/dev/ttyUSB0
 PROG?=arduino
 PROGBAUD?=57600
+APPBAUD=19200
 
-DEFINES=F_CPU=$(F_CPU)ULL
+DEFINES=F_CPU=$(F_CPU)ULL UART_BAUD=$(APPBAUD)ULL
 FLAGS=-mmcu=$(MCU)
 CFLAGS=$(FLAGS) $(addprefix -D,$(DEFINES)) -Os
 LFLAGS=$(FLAGS)
@@ -31,6 +32,9 @@ help:
 	@echo "$(MAKE) flash"
 	@echo "  - Compiles $(PROGRAM).hex and flashes it to $(PROG) at port $(PORT)"
 	@echo ""
+	@echo "$(MAKE) terminal"
+	@echo "  - Starts up picocom on $(PORT) with $(APPBAUD), 8N1"
+	@echo ""
 	@echo "$(MAKE) clean"
 	@echo "  - Cleans up all build artifacts"
 	@echo ""
@@ -42,6 +46,9 @@ clean:
 
 flash: $(PROGRAM).hex
 	avrdude -P $(PORT) -c $(PROG) -b $(PROGBAUD) -p $(MCU) -e -U flash:w:$<
+
+terminal:
+	picocom --baud $(APPBAUD) $(PORT)
 
 init-vscode:
 	mkdir -p .vscode
@@ -61,5 +68,5 @@ $(PROGRAM).elf: $(OBJS)
 %.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-.PHONY: clean flash init-vscode help hex
+.PHONY: clean flash init-vscode help hex terminal
 .SUFFIXES:

@@ -1,37 +1,52 @@
 #include <stdbool.h> // stellt "true" bereit
+#include <stddef.h>
 #include <avr/io.h> // stellt DDRB, PORTB und PIN5 bereit
 #include <avr/interrupt.h>
 #include <util/delay.h> // stellt _delay_ms bereit
 
-#define TIMER1_FREQ 2 // Hz
-#define TIMER1_PRESC 1024
-#define TIMER1_LIMIT (((F_CPU) / (TIMER1_PRESC)) / (TIMER1_FREQ) - 1)
+// UART_BAUD ist im Makefile definiert
+#define UBRR_BAUD ((F_CPU / (16 * (UART_BAUD))) - 1)
+
+#if (UBRR_BAUD & ~0xFFF) != 0
+  #error "Baud rate out of range!"
+#endif
+
+void uart_tx(char c)
+{
+  while((UCSR0A & (1<<UDRE0)) == 0); // warte darauf, dass wir senden dürfen
+  UDR0 = c;
+}
+
+char uart_rx()
+{
+  while((UCSR0A & (1<<RXC0)) == 0); // warte auf empfangenes zeichen
+  return UDR0;
+}
+
+void uart_tx_buf(char const * str, size_t length)
+{
+  while(length > 0) {
+    uart_tx(*str);
+    str += 1;
+    length -= 1;
+  }
+}
 
 int main()
 {
-  DDRB = (1<<PIN5); // Richtungsbit setzen PB5 = Output, der Rest ist Input
-  
-  // Setup des Timers
-  TCCR1A = 0; // Keine PWM-Generation
-  TCCR1B = (1<<CS12) | (1<<CS10) | (1<<WGM12); // Prescaler=1024,  CTC-Mode, TOP=OCR1A
-  TCCR1C = 0;
+  UCSR0A = 0; // Single Speed, Kein Multiprozessormodus
+  UCSR0B = (1<<RXEN0) | (1<<TXEN0); // Sender und Empfänger anschalten
+  UCSR0C =  (1<<UCSZ01) | (1<<UCSZ00); // 8N1
+  UBRR0 = (UBRR_BAUD & 0xFFF); 
 
-  // Set the limit of the counter
-  OCR1AH = (TIMER1_LIMIT >> 8) & 0xFF;
-  OCR1AL = (TIMER1_LIMIT & 0xFF);
+  // Schreibe einen String auf den Seriellport:
+  char const text[] = "Hello, World!\r\n";
+  uart_tx_buf(text, sizeof(text) - 1);
 
-  TIMSK1 = (1<<OCIE1A); // Interrupt on compare match A
-
-  sei(); // Interrupts an, hier beginnt es dann zu blinken
-  
-  // Ab jetzt: CPU dreht einfach nur einen Kreis und wartet auf Interrupts
-  // Das Blinken passiert von selbst
-  while(true);
+  while(true)
+  {
+    char c = uart_rx();
+    uart_tx(c);
+  }
 }
 
-// Definiert den Interrupt TIMER2 Compare A Match
-ISR(TIMER1_COMPA_vect)
-{
-  // Wenn der Timer einen Compare Match hat, togglen wir die LED
-  PORTB ^= (1<<PIN5);
-}
