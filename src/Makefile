@@ -1,4 +1,3 @@
-PROGRAM=uart2
 F_CPU=16000000
 MCU=atmega328p
 PORT?=/dev/ttyUSB0
@@ -14,42 +13,45 @@ LFLAGS=$(FLAGS)
 CC=avr-gcc
 LD=avr-gcc
 
-SOURCES=main.c
-OBJS=$(SOURCES:.c=.o)
+all: blink1.elf blink2.elf uart1.elf uart2.elf
+	avr-size --mcu=$(MCU) $^
 
-all: $(PROGRAM).elf
-
-hex: $(PROGRAM).hex
-
-help:
-	@echo "Available commands:"
-	@echo "$(MAKE)"
-	@echo "  - Builds $(PROGRAM).elf"
-	@echo ""
-	@echo "$(MAKE) hex"
-	@echo "  - Builds $(PROGRAM).hex"
-	@echo ""
-	@echo "$(MAKE) flash"
-	@echo "  - Compiles $(PROGRAM).hex and flashes it to $(PROG) at port $(PORT)"
-	@echo ""
-	@echo "$(MAKE) terminal"
-	@echo "  - Starts up picocom on $(PORT) with $(APPBAUD), 8N1"
-	@echo ""
-	@echo "$(MAKE) clean"
-	@echo "  - Cleans up all build artifacts"
-	@echo ""
-	@echo "$(MAKE) init-vscode"
-	@echo "  - Initializes a VS Code project and creates the folder .vscode"
+hex: blink1.hex blink2.hex uart1.hex uart2.hex
 
 clean:
-	rm -f $(OBJS) $(PROGRAM).hex $(PROGRAM).elf
+	rm -f {blink1,blink2,uart1,uart2}.{o,hex,elf}
 
-flash: $(PROGRAM).hex
+# Requires TARGET to be set
+ifeq ($(strip $(TARGET)),)
+flash:
+	@echo "Please use one of the following:"
+	@echo "make TARGET=blink1 flash"
+	@echo "make TARGET=blink2 flash"
+	@echo "make TARGET=uart1 flash"
+	@echo "make TARGET=uart2 flash"
+else
+flash: $(TARGET).hex
 	avrdude -P $(PORT) -c $(PROG) -b $(PROGBAUD) -p $(MCU) -e -U flash:w:$<
+endif
 
+# Start a terminal on the given port
 terminal:
 	picocom --baud $(APPBAUD) $(PORT)
 
+# Map all programs directly to a .o file (and thus, to a .c file)
+%.elf: %.o
+	$(LD) $(LFLAGS) -o $@ $^
+
+# Convert elf file into hex file
+%.hex: %.elf
+	avr-objcopy -O ihex $< $@
+
+# Compiles a C file to an object file
+%.o: %.c
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+# This is just a fancy pants extra that will initialize your VSCode syntax highlighting and code completion
+# if you have the C/C++ extension installed
 init-vscode:
 	mkdir -p .vscode
 
@@ -58,15 +60,6 @@ init-vscode:
 	echo '{"configurations":[{"name": "AVR","includePath":["/usr/avr/include"],"defines":[' > .vscode/c_cpp_properties.json
 	avr-gcc $(CFLAGS) -c -dM -E - < /dev/null | grep -E '#define ([A-Za-z0-9_]+)[[:space:]]+([A-Za-z0-9\+\*\_]+)' | sort | sed -E 's/^#define ([A-Za-z0-9_]+)[[:space:]]+(.*)/"\1=\2",/' >> .vscode/c_cpp_properties.json
 	echo '"_DUMMY_=0"],"compilerPath": "/usr/bin/avr-gcc","cStandard":"c99","cppStandard":"c++11","intelliSenseMode":"gcc-x86"}],"version":4}' >> .vscode/c_cpp_properties.json
-
-$(PROGRAM).elf: $(OBJS)
-	$(LD) $(LFLAGS) -o $@ $^
-
-%.hex: %.elf
-	avr-objcopy -O ihex $< $@
-
-%.o: %.c
-	$(CC) $(CFLAGS) -c -o $@ $<
 
 .PHONY: clean flash init-vscode help hex terminal
 .SUFFIXES:
