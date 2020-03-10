@@ -246,81 +246,222 @@
 
 \begin{frame}
 \frametitle{Schritt 3: Compilen \& Linken}
-- Was ist ein
-    - Compiler?
-    - Linker?
-    - Bibliothek?
-    - Makefile?
-- Dateiformate
-- Tools
+\begin{itemize}
+\item Was ist ein
+    \begin{itemize}
+    \item Compiler?
+    \item Linker?
+    \item Bibliothek?
+    \item Makefile?
+    \end{itemize}
+\item Dateiformate
+\item Tools
+\end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Was ist ein Compiler?}
+\begin{itemize}
+\item Übersetzt Quellcode in Maschinensprache
+\item Gibt „Object Files“ aus
+\item Kann verschiedene Optimierungen durchführen
+\item 
+\end{itemize}
+\lstinputlisting[language=C]{compile.sh}
 \end{frame}
 
 \begin{frame}
 \frametitle{Was ist ein Linker?}
+\begin{itemize}
+\item Verknüpft „Object Files“
+\item Weißt allen Dingen Adressen zu
+\item Sortiert Objekte im Speicher
+\item Bindet Bibliotheken ein
+\item Ist konfigurierbar (Linkerscript)
+\end{itemize}
+\lstinputlisting[language=C]{link.sh}
 \end{frame}
 
 \begin{frame}
 \frametitle{Was ist eine Bibliothek?}
+\textbf{Grundlegend:}
+\begin{itemize}
+\item Sammlung von Funktionalität
+\item Erlaubt Wiederverwendung von Code
+\end{itemize}
+
+\textbf{Statische Bibliothek:}
+\begin{itemize}
+\item Eine Sammlung von vorcompilierten Object Files
+\item Keine Laufzeitkosten
+\item Kann mit der richtigen Technik sogar nachträglich optimiert werden
+\end{itemize}
+\textbf{Dynamische Bibliothek:}
+\begin{itemize}
+\item Wird zu Programmstart in unsere ausführbare Datei geladen und gelinkt
+\item Im Embedded-Bereich quasi nie eingesetzt
+\item Konzept auf AVR unmöglich umzusetzen
+\end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Was ist ein Makefile?}
+\textbf{Wofür ein Buildsystem?}
+\begin{itemize}
+\item Viele wiederkehrende Tasks beim Entwickeln
+\item Bedingtes Ausführen von Tasks
+\item Bequeme Bedienung
+\end{itemize}
+
+\textbf{GNU Make:}
+\begin{itemize}
+\item Einfach zu bedienen
+\item \lstinline{Makefile} enthält Regeln zum Ausführen von Befehlen
+\item Tracking von Abhängigkeiten über Schreibdatum
+\item Kann beliebige Sequenz von Shellbefehlen ausführen
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Was ist ein Makefile?}
+\lstinputlisting[language=Make]{demo.mk}
 \end{frame}
 
 \begin{frame}
 \frametitle{Dateiformate}
-- Dateiformate
-    - elf object
-    - elf executable
-    - ihex
+\begin{itemize}
+\item ELF object
+    \begin{itemize}
+    \item Ist das Ergebnis des Compilers
+    \item Enthält compilierten Code ohne absolute Adressen
+    \item Muss noch gelinkt werden, wiederverwendbar
+    \item Enthält Debug-Informationen
+    \end{itemize}
+\item ELF executable
+    \begin{itemize}
+    \item Ist das Ergebnis des Linkers
+    \item Enthält compilierten Code mit absolute Adressen
+    \item Enthält Debug-Informationen
+    \end{itemize}
+\item Intel HEX
+    \begin{itemize}
+    \item Einfaches Plain-Text-Format
+    \item Enthält ausschließlich Daten
+    \item Speichert eine Ansammlung aus Adresse-Daten-Paaren
+    \end{itemize}
+\end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Tools}
-    - objdump
-    - size
-    - addr2line
+\begin{itemize}
+\item Theoretisch ist das vorgestellte ausreichend zum Entwickeln
+\item Arbeit ist mühsahm, Trial und Error
+\item Gibt in den \textit{binutils} eine große Menge an Tools, die die Arbeit erleichtern
+\end{itemize}
+
+
+\textbf{Beispiele:}
+\begin{itemize}
+\item objdump
+\item size
+\item addr2line
+\item …
+\end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{objdump}
+\begin{itemize}
+\item Dumpt Object Files und Executables
+\item Disassembler
+\item Hex-Dump
+\item Symboltabellen
+\item …
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{objdump}
+\lstinputlisting[language=Make]{objdump.demo}
+\end{frame}
+
+\begin{frame}
+\frametitle{objdump}
+\lstinputlisting[language=Make]{objdump.demo2}
 \end{frame}
 
 \begin{frame}
 \frametitle{size}
+\begin{itemize}
+\item Gibt eine Zusammenfassung der Sektionsgrößen aus
+\end{itemize}
+\lstinputlisting[language=Make]{size.demo}
 \end{frame}
 
 \begin{frame}
 \frametitle{addr2line}
+\begin{itemize}
+\item Gibt für eine Adresse die dazu passende Codezeile
+\item Funktioniert nur, wenn mit Debugsymbolen compiliert wird (\lstinline{-gdwarf-2})
+\end{itemize}
+\lstinputlisting[language=Make]{addr2line.demo}
 \end{frame}
 
 \begin{frame}
 \frametitle{Schritt 4: Flashen}
-- Möglichkeiten
-    - High Voltage Serial Programming 
-    - In-System Programming
-    - Bootloader
-- Tools
-  - avrdude
-  - PonyProg
-  - AVRStudio
-  - …
+\begin{itemize}
+\item Möglichkeiten
+    \begin{itemize}
+    \item High Voltage Serial Programming 
+    \item In-System Programming
+    \item Bootloader
+    \end{itemize}
+\item Tools
+    \begin{itemize}
+    \item avrdude
+    \item PonyProg
+    \item AVRStudio
+    \item  …
+    \end{itemize}
+\end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{In-System Programming}
+\begin{itemize}
+\item Benötigt einen 6-Pin-Header auf der Platine
+\item Alternativ: 10-Pin-Header
+\item \textbf{Pro:} Flash ist zu 100\% nutzbar
+\item \textbf{Pro:} Ermöglicht Änderung der Fuse Bits
+\item \textbf{Contra:} Benötigt spezielle Programmierhardware
+\item \textbf{Contra:} Mäßig schnell
+\end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Bootloader}
+\begin{itemize}
+\item Benötigt eine \textit{beliebige} Schnittstelle zum System
+\item Liegt am Ende des Flashs, wird zu Beginn ausgeführt
+\item Ist frei programmierbare Software
+\item \textbf{Pro:} Benötigt keine spezielle Hardware
+\item \textbf{Pro:} Support beliebiger Programmiermöglichkeiten
+\item \textbf{Pro:} Kann max. CPU-Frequenz ausnutzen
+\item \textbf{Contra:} Ermöglicht keine Änderung der Fuse Bits
+\item \textbf{Contra:} Flash ist nicht vollständig nutzbar
+\item \textbf{Contra:} Keine standardisierte Programmierschnittstelle
+\end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{avrdude}
+\begin{itemize}
+\item Open-Source Tool
+\item Kann quasi jede Programmierhardware (> 90 unterstützte Geräte)
+\item Kommandozeilentool, gibt aber GUIs
+\end{itemize}
+\lstinputlisting[language=sh]{avrdude.demo}
 \end{frame}
 
 \begin{frame}
@@ -335,10 +476,22 @@
 
 \begin{frame}
 \frametitle{Vergleich: Blink}
+\lstinputlisting{blink.compare}
+\begin{itemize}
+\item Größenreduktion auf 25\% bzw. 21\% im Vgl. zum Arduino-Code
+\item Interrupt-Lösung benötigt quasi keine Rechenzeit
+\item Blink liese sich sogar ohne Rechenzeit implementieren
+\end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Vergleich: Serial}
+\lstinputlisting{serial.compare}
+\begin{itemize}
+\item Größenreduktion auf 19\% bzw. 20\% im Vgl. zum Arduino-Code
+\item Massiv weniger RAM-Verbrauch (10\% beim Arduino vs. 0,7\% bei Selbstprogrammiert)
+\item Interrupt-Lösung benötigt quasi keine Rechenzeit
+\end{itemize}
 \end{frame}
 
 \begin{frame}
@@ -354,7 +507,7 @@
 \begin{itemize}
 \item mikrocontroller.net
 \item Roboternetz.de
-\item Quellcode aus den Slides\\https://github.com/MasterQ32/avr-tutorial
+\item Quellcode und Slides\\https://github.com/MasterQ32/avr-tutorial
 \end{itemize}
 \end{frame}
 

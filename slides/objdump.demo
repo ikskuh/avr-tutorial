@@ -1,0 +1,21 @@
+blink1.elf:     file format elf32-avr
+
+Disassembly of section .text:
+
+00000080 <main>:
+  80:	80 e2       	ldi	r24, 0x20	; 32
+  82:	84 b9       	out	0x04, r24	; 4
+  84:	90 e2       	ldi	r25, 0x20	; 32
+  86:	85 b1       	in	r24, 0x05	; 5
+  88:	89 27       	eor	r24, r25
+  8a:	85 b9       	out	0x05, r24	; 5
+  8c:	2f ef       	ldi	r18, 0xFF	; 255
+  8e:	33 ec       	ldi	r19, 0xC3	; 195
+  90:	89 e0       	ldi	r24, 0x09	; 9
+  92:	21 50       	subi	r18, 0x01	; 1
+  94:	30 40       	sbci	r19, 0x00	; 0
+  96:	80 40       	sbci	r24, 0x00	; 0
+  98:	e1 f7       	brne	.-8      	; 0x92 <main+0x12>
+  9a:	00 c0       	rjmp	.+0      	; 0x9c <main+0x1c>
+  9c:	00 00       	nop
+  9e:	2f ef       	ldi	r18, 0xFF	; 255

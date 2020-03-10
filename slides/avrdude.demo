@@ -1,0 +1,6 @@
+avrdude \
+  -P /dev/ttyUSB0 \
+  -c arduino \
+  -p atmega328p \
+  -e \
+  -U flash:w:example.hex

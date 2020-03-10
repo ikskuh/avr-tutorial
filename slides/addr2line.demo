@@ -1,0 +1,4 @@
+[user@pc src]$ avr-addr2line -e blink1.elf 86
+/home/felix/projects/avr/src/blink1.c:10
+[user@pc src]$ avr-addr2line -e blink1.elf e6
+/home/felix/projects/avr/src/blink1.c:11

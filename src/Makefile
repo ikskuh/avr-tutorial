@@ -8,7 +8,7 @@ APPBAUD=19200      # What baud rate has our UART application
 
 # Prepare compiler flags
 DEFINES=F_CPU=$(F_CPU)ULL UART_BAUD=$(APPBAUD)ULL
-FLAGS=-mmcu=$(MCU)
+FLAGS=-mmcu=$(MCU) -g -gdwarf-2
 CFLAGS=$(FLAGS) $(addprefix -D,$(DEFINES)) -Os
 LFLAGS=$(FLAGS)
 

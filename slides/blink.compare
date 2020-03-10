@@ -1,0 +1,4 @@
+   text    data     bss     dec     hex filename
+    924       0       9     933     3a5 arduino-blink.elf
+    236       0       0     236      ec blink1.elf
+    198       0       0     198      c6 blink2.elf

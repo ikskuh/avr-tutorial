@@ -1,0 +1,4 @@
+   text    data     bss     dec     hex filename
+   1454      34     166    1654     676 arduino-uart.elf
+    306      16       0     322     142 uart1.elf
+    322      16       0     338     152 uart2.elf
