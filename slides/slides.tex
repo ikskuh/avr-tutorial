@@ -207,26 +207,41 @@
 
 \begin{frame}
 \frametitle{Schritt 2: Code schreiben}
-    - Blink 1 / How to: Überhaupt
-    - Blink 2 / How to: Datenblatt verwenden
-    - UART 1 / How to: Hardware-Init
-    - UART 2 / How to: Interrupt
+
+\textbf{Allgemein:}
+\begin{itemize}
+\item C ist die primäre Embedded-Programmiersprache
+\item C++, Basic, Pascal, Zig, Rust, … sind auf AVR ebenfalls verfügbar
+\item Dynamische Speicherverwaltung wird selten benötigt
+\end{itemize}
+
+\textbf{Hands on:}
+\begin{enumerate}
+\item Code
+\item Datenblatt verwenden
+\item Komplexer Hardware-Init
+\item Interrupt
+\end{enumerate}
 \end{frame}
 
 \begin{frame}
-\frametitle{How to: Code – Blink 1}
+\frametitle{Hands on: Code (Blink 1)}
+\lstinputlisting[language=C]{blink1.c}
 \end{frame}
 
 \begin{frame}
-\frametitle{How to: Datenblatt – Blink 2}
+\frametitle{Hands on: Datenblatt (Blink 2)}
+\lstinputlisting[language=C]{blink2.c}
 \end{frame}
 
 \begin{frame}
-\frametitle{How to: Hardware-Init – UART 1}
+\frametitle{Hands on: Hardware-Init (UART 1)}
+\lstinputlisting[language=C]{uart1.c}
 \end{frame}
 
 \begin{frame}
-\frametitle{How to: Interrupts – UART 2}
+\frametitle{Hands on: Interrupts (UART 2)}
+\lstinputlisting[language=C]{uart2.c}
 \end{frame}
 
 \begin{frame}
@@ -328,13 +343,26 @@
 
 \begin{frame}
 \frametitle{Wie geht's weiter?}
-- Microcontroller.net
-- Roboternetz.de
-- Quellcode aus den Slides
+
+\textbf{Programmierung:}
+\begin{itemize}
+\item C++
+\item Bibliotheken
+\end{itemize}
+
+\textbf{Links:}
+\begin{itemize}
+\item mikrocontroller.net
+\item Roboternetz.de
+\item Quellcode aus den Slides\\https://github.com/MasterQ32/avr-tutorial
+\end{itemize}
 \end{frame}
 
 \begin{frame}
-\frametitle{Fragen?}
+\frametitle{}
+\begin{center}
+\Huge{\textbf{Fragen?}}
+\end{center}
 \end{frame}
 
 \end{document}
